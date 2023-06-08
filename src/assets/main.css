@@ -1,9 +1,10 @@
 @import './base.css';
 
-*{
+* {
   padding: 0;
   margin: 0;
 }
-body{
+
+body {
   background-color: #1d1a1f;
 }
