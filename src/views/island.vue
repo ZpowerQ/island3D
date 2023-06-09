@@ -90,7 +90,7 @@ video.oncanplay = () => {
 
 // 载入环境纹理hdr(让小岛不为黑色)
 const hdrloader = new RGBELoader();
-hdrloader.loadAsync("textures/050.hdr").then((texture) => {
+hdrloader.loadAsync("textures/sky/050.hdr").then((texture) => {
   texture.mapping = THREE.EquirectangularReflectionMapping;
   scene.background = texture;
   scene.environment = texture;
@@ -128,4 +128,8 @@ loader.load("models/island2.glb", (gltf) => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+body {
+  background-color: #1d1a1f;
+}
+</style>

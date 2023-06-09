@@ -1,13 +1,18 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/home.vue";
+import bearView from "../views/3Dbear.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
-      name: "home",
-      component: HomeView,
+      name: "bear",
+      component: bearView,
+    },
+    {
+      path: "/island",
+      name: "island",
+      component: () => import("../views/island.vue"),
     },
   ],
 });
