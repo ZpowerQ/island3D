@@ -28,7 +28,7 @@ onMounted(() => {
   // 加载背景纹理
   const loader = new THREE.TextureLoader();
   const bgTexture = loader.load("textures/bear/050.jpg");
-  // 反射设置
+  // 折射设置
   bgTexture.mapping = THREE.EquirectangularRefractionMapping;
 
   scene.background = bgTexture;
