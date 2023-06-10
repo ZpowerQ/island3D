@@ -6,7 +6,7 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-      name: "robot",
+      name: "site",
       component: siteView,
     },
     {
