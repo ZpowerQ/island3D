@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory } from "vue-router";
-import cardView from "../views/card.vue";
+import siteView from "../views/site.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
-      name: "card",
-      component: cardView,
+      name: "robot",
+      component: siteView,
     },
     {
       path: "/island",
@@ -23,6 +23,16 @@ const router = createRouter({
       path: "/car",
       name: "car",
       component: () => import("../views/car.vue"),
+    },
+    {
+      path: "/card",
+      name: "card",
+      component: () => import("../views/card.vue"),
+    },
+    {
+      path: "/robot",
+      name: "robot",
+      component: () => import("../views/robot.vue"),
     },
   ],
 });
