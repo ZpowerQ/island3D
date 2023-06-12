@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory } from "vue-router";
-import wordView from "../views/word.vue";
+import emoonView from "../views/emoon.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
-      name: "word",
-      component: wordView,
+      name: "emoon",
+      component: emoonView,
     },
     {
       path: "/island",
@@ -43,6 +43,11 @@ const router = createRouter({
       path: "/earth",
       name: "earth",
       component: () => import("../views/earth.vue"),
+    },
+    {
+      path: "/word",
+      name: "word",
+      component: () => import("../views/word.vue"),
     },
   ],
 });
