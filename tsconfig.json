@@ -2,10 +2,10 @@
   "files": [],
   "references": [
     {
-      "paths": {
-        "vuex": ["node_modules/vuex/types/index.d.ts"],
-        "vue-router": ["node_modules/........"]
-      }
+      "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.app.json"
     }
   ]
 }
