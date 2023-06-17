@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory } from "vue-router";
-import footballView from "../views/football.vue";
+import missileView from "../views/missile.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
-      name: "football",
-      component: footballView,
+      name: "missile",
+      component: missileView,
     },
     {
       path: "/island",
@@ -58,6 +58,11 @@ const router = createRouter({
       path: "/newyear",
       name: "newYear",
       component: () => import("../views/newYear.vue"),
+    },
+    {
+      path: "/football",
+      name: "football",
+      component: () => import("../views/football.vue"),
     },
   ],
 });
