@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory } from "vue-router";
-import missileView from "../views/missile.vue";
+import photo3dView from "../views/photo3d.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
-      name: "missile",
-      component: missileView,
+      name: "photo3d",
+      component: photo3dView,
     },
     {
       path: "/island",
@@ -63,6 +63,11 @@ const router = createRouter({
       path: "/football",
       name: "football",
       component: () => import("../views/football.vue"),
+    },
+    {
+      path: "/missile",
+      name: "missile",
+      component: () => import("../views/missile.vue"),
     },
   ],
 });
