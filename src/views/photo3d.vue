@@ -3,11 +3,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 let photoRef = ref(null);
+let animateId = null;
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
   90,
@@ -79,7 +80,7 @@ onMounted(() => {
     material.uniforms.uTime.value = performance.now() / 1000;
     renderer.render(scene, camera);
     // controls.update();
-    requestAnimationFrame(render);
+    animateId = requestAnimationFrame(render);
   }
   render();
   // 监听窗口变化
@@ -93,6 +94,11 @@ onMounted(() => {
     mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
   });
+});
+onBeforeUnmount(() => {
+  cancelAnimationFrame(animateId);
+  renderer.dispose();
+  animateId = null;
 });
 </script>
 

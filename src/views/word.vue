@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onBeforeUnmount } from "vue";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
@@ -13,6 +13,7 @@ import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import { onMounted } from "vue";
 
 let wordContainer = ref(null);
+let animateId = null;
 // 创建场景
 const scene = new THREE.Scene();
 // 创建相机
@@ -41,7 +42,7 @@ onMounted(() => {
   controls.enableDamping = true;
 
   function animate() {
-    requestAnimationFrame(animate);
+    animateId = requestAnimationFrame(animate);
     controls.update();
     renderer.render(scene, camera);
   }
@@ -80,6 +81,11 @@ onMounted(() => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
+});
+onBeforeUnmount(() => {
+  cancelAnimationFrame(animateId);
+  renderer.dispose();
+  animateId = null;
 });
 </script>
 

@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import * as THREE from "three";
 import gsap from "gsap";
 import * as CANNON from "cannon-es";
@@ -15,6 +15,8 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 let footballRef = ref(null);
 let percentage = ref(30);
+let animateId = null;
+let renderer = null;
 gsap.to(percentage, {
   value: 100,
   duration: 1,
@@ -44,7 +46,7 @@ onMounted(() => {
   controls.minDistance = 1;
 
   // 创建渲染器
-  const renderer = new THREE.WebGLRenderer({
+  renderer = new THREE.WebGLRenderer({
     antialias: true,
     logarithmicDepthBuffer: true,
   });
@@ -153,7 +155,7 @@ onMounted(() => {
     }
     renderer.render(scene, camera);
     controls.update();
-    requestAnimationFrame(render);
+    animateId = requestAnimationFrame(render);
   }
   render();
 
@@ -182,6 +184,11 @@ onMounted(() => {
       ballBody.angularVelocity.set(0, 0, 0); // 重置角速度
     }, 5000);
   });
+});
+onBeforeUnmount(() => {
+  cancelAnimationFrame(animateId);
+  renderer.dispose();
+  animateId = null;
 });
 </script>
 

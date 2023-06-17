@@ -32,7 +32,7 @@
 
 <script setup>
 import * as THREE from "three";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
@@ -40,6 +40,8 @@ import gsap from "gsap";
 
 let screenDom = ref(null);
 let pages = ref(null);
+let animateId = null;
+let renderer = null;
 onMounted(() => {
   // 创建场景
   let scene = new THREE.Scene();
@@ -52,7 +54,7 @@ onMounted(() => {
   );
   camera.position.set(0, 0, 10);
   // 创建渲染器
-  let renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   //将渲染器添加到页面中
   screenDom.value.appendChild(renderer.domElement);
@@ -69,7 +71,7 @@ onMounted(() => {
 
   function render() {
     renderer.render(scene, camera);
-    requestAnimationFrame(render);
+    animateId = requestAnimationFrame(render);
   }
 
   render();
@@ -206,6 +208,11 @@ onMounted(() => {
       scene.add(moonInstance);
     }
   });
+});
+onBeforeUnmount(() => {
+  cancelAnimationFrame(animateId);
+  renderer.dispose();
+  animateId = null;
 });
 </script>
 

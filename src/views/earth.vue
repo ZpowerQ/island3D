@@ -6,11 +6,12 @@
 
 <script setup>
 import * as THREE from "three";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import gsap from "gsap";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 let screenDom = ref(null);
-
+let animateId = null;
+let renderer = null;
 const lon2xyz = (R, longitude, latitude) => {
   let lon = (longitude * Math.PI) / 180; //经度弧度值
   let lat = (latitude * Math.PI) / 180; //纬度弧度值
@@ -36,7 +37,7 @@ onMounted(() => {
   );
   camera.position.set(0, 50, 300);
   // 创建渲染器
-  let renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   screenDom.value.appendChild(renderer.domElement);
 
@@ -235,7 +236,7 @@ onMounted(() => {
 
   function render() {
     controls.update();
-    requestAnimationFrame(render);
+    animateId = requestAnimationFrame(render);
     renderer.render(scene, camera);
   }
   render();
@@ -246,6 +247,11 @@ onMounted(() => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
+});
+onBeforeUnmount(() => {
+  cancelAnimationFrame(animateId);
+  animateId = null;
+  renderer.dispose();
 });
 </script>
 

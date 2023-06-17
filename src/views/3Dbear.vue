@@ -3,11 +3,13 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, onBeforeUnmount } from "vue";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 const canvasContainer = ref(null);
+let animateId = null;
+let renderer = null;
 onMounted(() => {
   // 初始化场景
   const scene = new THREE.Scene();
@@ -54,7 +56,7 @@ onMounted(() => {
   });
 
   // 初始化渲染器
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer = new THREE.WebGLRenderer({ antialias: true });
   // 设置渲染器大小
   renderer.setSize(window.innerWidth, window.innerHeight);
   // 监听窗口变化
@@ -79,10 +81,15 @@ onMounted(() => {
     // 渲染场景
     renderer.render(scene, camera);
     // 递归渲染
-    requestAnimationFrame(render);
+    animateId = requestAnimationFrame(render);
   };
 
   render();
+});
+onBeforeUnmount(() => {
+  cancelAnimationFrame(animateId);
+  renderer.dispose();
+  animateId = null;
 });
 </script>
 

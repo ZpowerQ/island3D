@@ -3,13 +3,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, onBeforeMount } from "vue";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import {
   CSS2DRenderer,
   CSS2DObject,
 } from "three/examples/jsm/renderers/CSS2DRenderer.js";
+let animateId: any = null;
+let renderer: THREE.WebGLRenderer | null = null;
 let camera = new THREE.PerspectiveCamera(
   45,
   window.innerWidth / window.innerHeight,
@@ -26,7 +28,7 @@ let clock = new THREE.Clock();
 let textureLoader = new THREE.TextureLoader();
 onMounted(() => {
   //初始化渲染器
-  let renderer = new THREE.WebGLRenderer({ alpha: true });
+  renderer = new THREE.WebGLRenderer({ alpha: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
   // 渲染阴影
@@ -86,9 +88,9 @@ onMounted(() => {
     let axis = new THREE.Vector3(0, 1, 0);
     // earth.rotateOnAxis(axis, ((elapsed * Math.PI) / 1000) % 360);
     earth.rotateOnAxis(axis, 0.01);
-    renderer.render(scene, camera);
+    renderer!.render(scene, camera);
     labelRenderer!.render(scene, camera);
-    requestAnimationFrame(render);
+    animateId = requestAnimationFrame(render);
   }
   render();
 
@@ -113,11 +115,16 @@ onMounted(() => {
     const height = window.innerHeight;
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
-    renderer.setSize(width, height);
+    renderer!.setSize(width, height);
     earthLabel.position.set(0, EARTH_RADIUS + 0.5, 0);
     moonLabel.position.set(0, MOON_RADIUS + 0.5, 0);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer!.setPixelRatio(window.devicePixelRatio);
   });
+});
+onBeforeMount(() => {
+  cancelAnimationFrame(animateId);
+  renderer?.dispose();
+  animateId = null;
 });
 </script>
 

@@ -4,10 +4,11 @@
       <h1>{{ item.text }}</h1>
     </div>
   </div>
+  <div ref="cardRef"></div>
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, onBeforeUnmount } from "vue";
 import * as THREE from "three";
 import gsap from "gsap";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -15,6 +16,9 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import { Water } from "three/examples/jsm/objects/Water2.js";
+
+let cardRef = ref(null);
+let animateId = null;
 // 初始化场景
 const scene = new THREE.Scene();
 // 初始化相机
@@ -32,7 +36,9 @@ camera.updateProjectionMatrix();
 // 初始化渲染器
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+onMounted(() => {
+  cardRef.value.appendChild(renderer.domElement);
+});
 
 // 设置色调映射
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -147,7 +153,7 @@ gsap.to(options, {
 function render() {
   renderer.render(scene, camera);
   controls && controls.update();
-  requestAnimationFrame(render);
+  animateId = requestAnimationFrame(render);
 }
 
 // 使用补间动画移动相机
@@ -243,7 +249,11 @@ onMounted(() => {
     camera.updateProjectionMatrix();
   });
 });
-
+onBeforeUnmount(() => {
+  cancelAnimationFrame(animateId);
+  renderer.dispose();
+  animateId = null;
+});
 // 实例化创建漫天星星
 let starsInstance = new THREE.InstancedMesh(
   new THREE.SphereGeometry(0.1, 32, 32),

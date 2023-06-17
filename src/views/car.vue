@@ -33,12 +33,13 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, onBeforeUnmount } from "vue";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 let controls = null;
+let animateId = null;
 let colors = ["red", "blue", "green", "gray", "orange", "purple"];
 let materials = [
   { name: "磨砂", value: 1 },
@@ -73,7 +74,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 const render = () => {
   renderer.render(scene, camera);
   controls && controls.update();
-  requestAnimationFrame(render);
+  animateId = requestAnimationFrame(render);
 };
 
 let wheels = [];
@@ -166,9 +167,9 @@ onMounted(() => {
   gltfLoader.load("models/bmw01.glb", (gltf) => {
     const model = gltf.scene;
     model.traverse((child) => {
-      if (child.isMesh) {
-        console.log(child.name);
-      }
+      // if (child.isMesh) {
+      //   console.log(child.name);
+      // }
       // 判断是否是轮毂
       if (child.isMesh && child.name.includes("轮毂")) {
         child.material = wheelsMaterial;
@@ -226,6 +227,11 @@ onMounted(() => {
   const light9 = new THREE.DirectionalLight(0xffffff, 0.3);
   light9.position.set(-5, -10, 0);
   scene.add(light9);
+});
+onBeforeUnmount(() => {
+  animateId && cancelAnimationFrame(animateId);
+  renderer.dispose();
+  animateId = null;
 });
 </script>
 

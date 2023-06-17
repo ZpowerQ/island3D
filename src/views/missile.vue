@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
@@ -12,7 +12,8 @@ import vertexShader from "../assets/three/shader/vertexShader.glsl?raw";
 import fragmentShader from "../assets/three/shader/fragmentShader.glsl?raw";
 
 let missileRef = ref(null);
-
+let animateId = null;
+let renderer = null;
 onMounted(() => {
   // 创建场景
   const scene = new THREE.Scene();
@@ -31,7 +32,7 @@ onMounted(() => {
   controls.enableDamping = true;
 
   // 创建渲染器
-  const renderer = new THREE.WebGLRenderer({
+  renderer = new THREE.WebGLRenderer({
     antialias: true,
     logarithmicDepthBuffer: true,
   });
@@ -121,7 +122,7 @@ onMounted(() => {
     params.iTime.value = t * 10;
     renderer.render(scene, camera);
     controls && controls.update();
-    requestAnimationFrame(render);
+    animateId = requestAnimationFrame(render);
   }
   render();
 
@@ -178,6 +179,11 @@ onMounted(() => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
+});
+onBeforeUnmount(() => {
+  cancelAnimationFrame(animateId);
+  renderer.dispose();
+  animateId = null;
 });
 </script>
 

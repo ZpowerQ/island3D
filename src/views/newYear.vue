@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
@@ -12,6 +12,8 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 let newYearRef = ref(null);
 let showText = false;
 let material = null;
+let animateId = null;
+let renderer = null;
 onMounted(() => {
   // 初始化场景
   let scene = new THREE.Scene();
@@ -25,7 +27,7 @@ onMounted(() => {
   );
   camera.position.z = 3;
   // 初始化渲染器
-  let renderer = new THREE.WebGLRenderer({ alpha: true });
+  renderer = new THREE.WebGLRenderer({ alpha: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
   newYearRef.value.appendChild(renderer.domElement);
@@ -119,7 +121,7 @@ onMounted(() => {
     }
     renderer.render(scene, camera);
     controls.update();
-    requestAnimationFrame(render);
+    animateId = requestAnimationFrame(render);
   }
   render();
 
@@ -131,6 +133,11 @@ onMounted(() => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
+});
+onBeforeUnmount(() => {
+  cancelAnimationFrame(animateId);
+  renderer.dispose();
+  animateId = null;
 });
 </script>
 

@@ -1,6 +1,9 @@
-<template></template>
+<template>
+  <div ref="islandRef"></div>
+</template>
 
 <script setup>
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import * as THREE from "three";
 // 导入控制器
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -11,6 +14,8 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 // 导入hdr加载库
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
+let animateId = null;
+let islandRef = ref(null);
 // 初始化场景
 const scene = new THREE.Scene();
 
@@ -50,9 +55,18 @@ window.addEventListener("resize", () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// 将渲染器添加到页面
-document.body.appendChild(renderer.domElement);
-
+onMounted(() => {
+  islandRef.value.appendChild(renderer.domElement);
+});
+onBeforeUnmount(() => {
+  // 清除动画
+  cancelAnimationFrame(animateId);
+  renderer.dispose();
+  animateId = null;
+  // video.pause();
+  // video = null;
+  // water = null;
+});
 // 初始化控制器
 const controls = new OrbitControls(camera, renderer.domElement);
 
@@ -60,7 +74,7 @@ function render() {
   // 渲染场景
   renderer.render(scene, camera);
   // 引擎自动更新渲染器
-  requestAnimationFrame(render);
+  animateId = requestAnimationFrame(render);
 }
 
 // render();
@@ -76,18 +90,18 @@ const sky = new THREE.Mesh(skyGeometry, skyMaterial);
 scene.add(sky);
 
 // 视频纹理
-const video = document.createElement("video");
-video.src = "textures/sky/sky.mp4";
-video.loop = true;
-video.muted = true;
-video.oncanplay = () => {
-  render();
-  video.play();
-  let texture = new THREE.VideoTexture(video);
-  skyMaterial.map = texture;
-  skyMaterial.map.needsUpdate = true;
-};
-
+// let video = document.createElement("video");
+// video.src = "textures/sky/sky.mp4";
+// video.loop = true;
+// video.muted = true;
+// video.oncanplay = () => {
+//   render();
+//   video.play();
+//   let texture = new THREE.VideoTexture(video);
+//   skyMaterial.map = texture;
+//   skyMaterial.map.needsUpdate = true;
+// };
+render();
 // 载入环境纹理hdr(让小岛不为黑色)
 const hdrloader = new RGBELoader();
 hdrloader.loadAsync("textures/sky/050.hdr").then((texture) => {
@@ -102,7 +116,7 @@ light.position.set(-100, 100, 10);
 
 // 创建水面
 const waterGeometry = new THREE.CircleGeometry(300, 64);
-const water = new Water(waterGeometry, {
+let water = new Water(waterGeometry, {
   textureWidth: 1024,
   textureHeight: 1024,
   color: 0xeeeeff,

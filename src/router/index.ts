@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory } from "vue-router";
-import photo3dView from "../views/photo3d.vue";
+import homeView from "../views/home.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
-      name: "photo3d",
-      component: photo3dView,
+      name: "home",
+      component: homeView,
     },
     {
       path: "/island",
@@ -69,7 +69,11 @@ const router = createRouter({
       name: "missile",
       component: () => import("../views/missile.vue"),
     },
+    {
+      path: "/photo3d",
+      name: "photo3d",
+      component: () => import("../views/photo3d.vue"),
+    },
   ],
 });
-
 export default router;

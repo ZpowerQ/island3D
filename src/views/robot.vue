@@ -4,13 +4,15 @@
 
 <script setup>
 import * as THREE from "three";
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import { Reflector } from "three/examples/jsm/objects/Reflector.js";
 let screenDom = ref(null);
+let animateId = null;
+let renderer = null;
 onMounted(() => {
   // 创建场景
   let scene = new THREE.Scene();
@@ -23,7 +25,7 @@ onMounted(() => {
   );
   camera.position.set(0, 1.5, 6);
   // 创建渲染器
-  let renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   screenDom.value.appendChild(renderer.domElement);
 
@@ -103,9 +105,14 @@ onMounted(() => {
   function render() {
     renderer.render(scene, camera);
     controls && controls.update();
-    requestAnimationFrame(render);
+    animateId = requestAnimationFrame(render);
   }
   render();
+});
+onBeforeUnmount(() => {
+  animateId && cancelAnimationFrame(animateId);
+  renderer.dispose();
+  animateId = null;
 });
 </script>
 
